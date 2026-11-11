@@ -93,7 +93,7 @@
         },
         "demo_recording_url": "TODO",
         "commerce": false,
-        "commerce_description": "No purchases, payments or checkouts happen in ChatGPT. The academy owner can set the price of their own draft offers and publish them only after saying yes; members buy on the academy's own website, where Stripe processes the payment. The tools return no payment data and never move money."
+        "commerce_description": "No purchases, subscriptions, payments or checkouts happen in ChatGPT, and no tool returns a payment, billing or checkout link. Stronux is a back-office tool for the academy owner's own website: set_price and publish_offer only configure the owner's own offers on stronux.com. Every offer starts as a draft. Publishing is off by default; the owner turns it on in Stronux (Settings > AI assistants), and ChatGPT asks for an explicit yes before each price or publish change. Members buy on the academy's own website, where Stripe processes the payment. The tools return no payment data and never move money."
       }
     }
   }
