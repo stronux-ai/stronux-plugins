@@ -1,0 +1,100 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "stronux",
+  "version": "1.0.0",
+  "description": "Set up and run your Stronux academy from ChatGPT: courses, guides, services, bundles, members, community and stats. It never deletes anything and only publishes when you say yes.",
+  "author": {
+    "name": "Devesoft LLC",
+    "email": "contact@stronux.com",
+    "url": "https://stronux.com"
+  },
+  "homepage": "https://stronux.com",
+  "repository": "https://github.com/stronux-ai/stronux-plugins",
+  "license": "MIT",
+  "keywords": [
+    "stronux",
+    "courses",
+    "academy"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Stronux",
+        "shortDescription": "Build and run your academy",
+        "longDescription": "Stronux is where creators run an online academy: courses, guides, 1:1 and group services, and bundles, on their own branded site, with a community.\n\nAsk ChatGPT in your own words, like \"turn this outline into a course\", \"what offers do I have?\" or \"who joined this month?\", and it uses Stronux to:\n\n- Create courses with sections and lessons, write lesson text, add YouTube links, and reorder sections and lessons.\n- Create guides, services with booking hours, and bundles of your courses, and edit their names, descriptions and prices.\n- List your offers and show the full structure of any course.\n- Report how your academy is doing: new, active and inactive members, course progress, who joined each day and who hasn't started yet. No payment data, no member emails.\n- Read what is new in your course communities, and post or reply in your name.\n- Invite members to your courses, and invite teammates as Instructor or Admin.\n\nYou stay in control:\n- Only the owner of an academy can connect it, by signing in with their Stronux account. If you own more than one academy, you choose which ones ChatGPT can use.\n- Offers ChatGPT creates start as drafts, and ChatGPT asks you to confirm changes before they are made. Publishing, posting in the community and sending invitations happen only when you say yes to that exact action and Publish is on in Settings > AI assistants.\n- ChatGPT never deletes anything or removes anyone.\n- Nothing is bought or paid inside ChatGPT. Members buy on your academy's own site.\n- You can disconnect anytime in Settings > AI assistants.\n\nFor lesson videos, PDFs and images, add a YouTube link or upload the files in Stronux.\n\nRequires a Stronux account that owns an academy.",
+        "developerName": "Devesoft, LLC",
+        "category": "Productivity",
+        "capabilities": [],
+        "websiteURL": "https://stronux.com",
+        "supportURL": "https://stronux.com/contact",
+        "privacyPolicyURL": "https://stronux.com/privacy-policy",
+        "termsOfServiceURL": "https://stronux.com/terms-of-service",
+        "defaultPrompt": [
+          "What offers do I have in my academy?",
+          "How is my academy doing this month? Who hasn't started a course yet?",
+          "Turn this outline into a draft course with sections and a short text lesson in each one."
+        ],
+        "brandColor": "#FF6A3D",
+        "logo": "./assets/logo.png"
+      },
+      "onboardingSkill": "./skills/get-started/SKILL.md",
+      "publication": {
+        "countries": [],
+        "release_notes": "First version: set up and edit courses, guides, services and bundles as drafts, see academy stats, read and answer the community, and invite members and teammates. Nothing is deleted; publishing needs the owner's yes."
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Read: lists the offers of the test academy.",
+              "prompt": "What offers do I have in my academy?",
+              "tools_triggered": "whoami, list_offers",
+              "expected_behavior": "ChatGPT names the test academy and lists its five offers with type, published state and price: the courses Phone Photography Basics and Basic Photo Editing, the guide Light at Home Guide, the service 1:1 Portfolio Review and the bundle Photo Starter Bundle. Nothing changes in Stronux."
+            },
+            {
+              "description": "Read: academy stats and the names behind one number.",
+              "prompt": "How is my academy doing this month? Who hasn't started a course yet?",
+              "tools_triggered": "whoami, get_academy_stats, list_member_changes",
+              "expected_behavior": "ChatGPT shows the numbers Stronux calculates for the last 30 days (members with access, active, new, inactive and per-course progress) and then the names of the members who have not started, with their course. No emails and no payment data appear. Nothing changes in Stronux."
+            },
+            {
+              "description": "Read: the structure of one course.",
+              "prompt": "Show me the structure of the course \"Phone Photography Basics\".",
+              "tools_triggered": "whoami, list_offers, get_course_structure",
+              "expected_behavior": "ChatGPT finds the course by name and shows its three sections with their lessons in order, and which lessons have a video. Nothing changes in Stronux."
+            },
+            {
+              "description": "Write: creates a draft course with sections and text lessons.",
+              "prompt": "Create a draft course called \"Home Coffee Basics\" with three sections: Beans, Brewing and Tasting, and a short text lesson in each one.",
+              "tools_triggered": "whoami, create_course, add_section, add_lesson",
+              "expected_behavior": "ChatGPT shows a short plan and asks for a yes, and ChatGPT's own confirmation appears before the write calls. It then creates the course as a draft (not published, nobody can buy it) with the sections Beans, Brewing and Tasting and one text lesson in each, and summarizes what it created. Nothing is published."
+            },
+            {
+              "description": "Write: creates a draft bundle from the two existing courses.",
+              "prompt": "Put my two courses in a bundle called \"Starter Pack\".",
+              "tools_triggered": "whoami, list_offers, create_bundle",
+              "expected_behavior": "ChatGPT finds the two courses, asks to confirm, and creates the bundle Starter Pack as a draft with both courses. It does not set a price unless asked and does not publish it. The existing Photo Starter Bundle is not changed."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Not about Stronux: ChatGPT should answer on its own and call no Stronux tool.",
+              "prompt": "What's a good recipe for banana bread?"
+            },
+            {
+              "description": "Deleting: Stronux has no delete tool. ChatGPT should say it cannot delete and that it is done in Stronux, and call no write tool.",
+              "prompt": "Delete the course \"Basic Photo Editing\" from my academy."
+            },
+            {
+              "description": "Money: Stronux tools never move money. ChatGPT should say payouts and refunds are handled in Stronux and call no tool that changes anything.",
+              "prompt": "Pay out my Stronux earnings to my bank account and refund the last purchase."
+            }
+          ]
+        },
+        "demo_recording_url": "TODO",
+        "commerce": false,
+        "commerce_description": "No purchases, subscriptions, payments or checkouts happen in ChatGPT, and no tool returns a payment, billing or checkout link. Stronux is a back-office tool for the academy owner's own website: set_price and publish_offer only configure the owner's own offers on stronux.com. Every offer starts as a draft. Publishing is off by default; the owner turns it on in Stronux (Settings > AI assistants), and ChatGPT asks for an explicit yes before each price or publish change. Members buy on the academy's own website, where Stripe processes the payment. The tools return no payment data and never move money."
+      }
+    }
+  }
+}

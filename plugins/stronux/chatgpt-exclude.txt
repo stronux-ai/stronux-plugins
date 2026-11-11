@@ -1,0 +1,3 @@
+# Skill folders under skills/ that are NOT shipped in the ChatGPT ZIP (Claude only).
+# One folder name per line. Lines starting with # are comments.
+files-from-folder

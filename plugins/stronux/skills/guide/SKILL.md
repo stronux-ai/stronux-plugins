@@ -1,18 +1,17 @@
 ---
 name: guide
-description: Use when the person asks to create or edit a guide (a downloadable PDF offer) in Stronux ("make a guide with this PDF", "hazme una guía con este PDF", "sube mi ebook").
+description: Use when the person asks to create or edit a guide (a downloadable PDF offer) in Stronux ("make a guide called Weekly Planning Template", "hazme una guía", "set the price of my ebook").
 ---
 
 # Guide
 
-Follow the `setup-offers` skill first (folder reading, plan, rules, including `whoami` and `space_id` on every call). Then:
+Follow the `setup-offers` skill first (plan, rules, including `whoami` and `space_id` on every call). Then:
 
-1. `create_guide` with the name and description (the file and price come next). Edit texts later with `update_offer`.
-2. `prepare_guide_upload` with filename, content_type (for example `application/pdf`) and byte_size (up to 50 MB), then `curl -X PUT -H "Content-Type: <content_type>" --upload-file "<file>" "<upload_url>"`. A guide that already has a file answers `guide_has_file`: never replace it, tell the person it is changed in Stronux. If the upload fails, do not retry: the guide already counts as having a file; tell the person to upload it from Stronux.
-3. Cover with `set_offer_cover` (see images in `setup-offers`). A guide cover is not cropped until it is framed, so frame it with `set_cover_framing` (target offer) only when the image is a photo or a design with text, not the cover page of the guide file; say so in the summary.
-4. `set_price`.
-5. Summary, in draft.
+1. `create_guide` with the name and description. Edit texts later with `update_offer`.
+2. The guide file (for example the PDF): To upload files from a folder on the computer, follow `files-from-folder` if you have it; otherwise the person uploads them in Stronux. Say in the summary whether it has a file: a guide without a file cannot be published. A guide that already has a file is never replaced (`guide_has_file`): it is changed in Stronux.
+3. A cover, if the person has one, goes by `files-from-folder`; otherwise it is added in Stronux. `set_price`.
+4. Summary, in draft.
 
-**Publish** only with the person's yes naming the guide and `publish_enabled` true: `publish_offer`. Never publish a guide whose upload failed or has no file.
+**Publish** only with the person's yes naming the guide and `publish_enabled` true: `publish_offer`. Never publish a guide that has no file; if `publish_offer` answers that content is missing, tell the person to upload the file in Stronux.
 
 Plan limit errors (`plan_limit_reached`, `overage_required`): explain; the extra is accepted in Stronux.

@@ -3,35 +3,17 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { TOOLS } from '../scripts/mcp-tools.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const plugin = join(root, 'plugins', 'stronux');
 const skillsDir = join(plugin, 'skills');
 const skills = readdirSync(skillsDir);
 
-// The 45 tools of the Stronux MCP in stronux_repo main (apps/academy/src/backend/claude-connection/mcp-*.js). Update by hand when the MCP changes:
-// that is the signal to review the skills.
-const TOOLS = new Set([
-  'whoami', 'list_offers', 'get_course_structure',
-  'create_course', 'update_course', 'add_section', 'update_section', 'reorder_sections',
-  'add_lesson', 'update_lesson_text', 'set_lesson_video_link', 'reorder_lessons',
-  'create_lesson_video_upload', 'get_lesson_video_status',
-  'prepare_material_upload', 'attach_material', 'set_course_cover', 'set_price',
-  'create_guide', 'prepare_guide_upload', 'create_service', 'set_service_booking',
-  'create_bundle', 'update_bundle_courses', 'update_offer', 'set_offer_cover',
-  'publish_offer', 'show_lessons', 'create_space_link',
-  'prepare_image_upload', 'set_section_cover',
-  'get_academy_stats', 'list_member_changes', 'list_member_joins',
-  'get_cover', 'set_cover_framing',
-  'preview_member_invites', 'invite_members',
-  'describe_staff_roles', 'invite_staff',
-  'list_community_activity', 'mark_community_seen', 'get_community_post', 'create_community_post', 'reply_in_community',
-]);
-
 test('45 known tools', () => assert.equal(TOOLS.size, 45));
 
-test('the nine skills exist', () => {
-  assert.deepEqual([...skills].sort(), ['bundle', 'community', 'course', 'guide', 'members', 'service', 'setup-offers', 'space-link', 'stats']);
+test('the eleven skills exist (nine of Claude + get-started + files-from-folder)', () => {
+  assert.deepEqual([...skills].sort(), ['bundle', 'community', 'course', 'files-from-folder', 'get-started', 'guide', 'members', 'service', 'setup-offers', 'space-link', 'stats']);
 });
 
 test('frontmatter has only name and description', () => {
@@ -59,7 +41,8 @@ test('tool names in backticks exist', () => {
 test('every skill carries the whoami and space_id rule; community marks with mark_token; no marked_read', () => {
   for (const s of skills) {
     const text = readFileSync(join(skillsDir, s, 'SKILL.md'), 'utf8');
-    assert.ok(text.includes('`whoami`') && text.includes('`space_id`'), `${s}: needs whoami and space_id`);
+    // get-started only calls whoami (no other tool), so it has no space_id to pass.
+    assert.ok(text.includes('`whoami`') && (s === 'get-started' || text.includes('`space_id`')), `${s}: needs whoami and space_id`);
     assert.ok(!text.includes('marked_read'), `${s}: marked_read is gone`);
   }
   const community = readFileSync(join(skillsDir, 'community', 'SKILL.md'), 'utf8');
@@ -105,8 +88,8 @@ test('nothing from a test environment ships in the repo', () => {
   }
 });
 
-test('plugin contains only plugin.json, .mcp.json and skills (D1)', () => {
-  assert.deepEqual(readdirSync(plugin).sort(), ['.claude-plugin', '.mcp.json', 'LICENSE', 'README.md', 'icon.png', 'skills']);
+test('plugin contains only the Claude files, the ChatGPT files and skills (D1)', () => {
+  assert.deepEqual(readdirSync(plugin).sort(), ['.claude-plugin', '.mcp.json', 'LICENSE', 'README.md', 'assets', 'chatgpt-exclude.txt', 'icon.png', 'mcp.json', 'plugin.json', 'skills']);
   for (const d of ['commands', 'agents', 'hooks', 'bin']) assert.ok(!existsSync(join(plugin, d)), d);
 });
 

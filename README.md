@@ -1,4 +1,8 @@
-# Stronux for Claude
+# Stronux plugins (Claude and ChatGPT)
+
+This repo holds the Stronux plugin for Claude Code and Claude Desktop, and the package for the ChatGPT plugin. Both share one `skills/` folder and connect to the same Stronux MCP server.
+
+## Stronux for Claude
 
 A plugin for Claude Code and Claude Desktop that turns the files you already have into offers in your Stronux academy: courses, guides, services, bundles and space links.
 
@@ -9,18 +13,20 @@ A plugin for Claude Code and Claude Desktop that turns the files you already hav
 ## Install
 
 ```
-/plugin marketplace add stronux-ai/stronux-claude
+/plugin marketplace add stronux-ai/stronux-plugins
 /plugin install stronux@stronux
 ```
 
 Or from a terminal, which installs directly:
 
 ```
-claude plugin marketplace add stronux-ai/stronux-claude
+claude plugin marketplace add stronux-ai/stronux-plugins
 claude plugin install stronux@stronux
 ```
 
 Full steps for Claude Code and Claude Desktop: [INSTALL.md](INSTALL.md).
+
+The repo used to be called `stronux-ai/stronux-claude`; GitHub redirects the old name, but use `stronux-ai/stronux-plugins` in new commands. The install name `stronux@stronux` does not change.
 
 ### For the team: test against another environment
 
@@ -47,13 +53,36 @@ Use a `<name>` other than `stronux` so it does not clash with the plugin's serve
 - The MCP now has 44 tools and the plugin 9 skills. Claude still never deletes, hides or moderates anything.
 
 
+## Stronux for ChatGPT
+
+The same plugin for ChatGPT lives next to the Claude one in `plugins/stronux/`, with files ChatGPT reads and Claude ignores:
+
+- `plugin.json` and `mcp.json` at the plugin root: the listing (name, descriptions, default prompts, review test cases) and the connection (OAuth with a client ID metadata document, no secrets).
+- `assets/logo.png`: the logo.
+- `skills/`: the same folder Claude uses, written without naming any client. `skills/files-from-folder` is **Claude only** (it reads local folders and uploads files with `curl`) and is listed in `chatgpt-exclude.txt`, so it is not in the ChatGPT ZIP. In ChatGPT the person uploads files in Stronux.
+
+Claude reads `.claude-plugin/plugin.json` and `.mcp.json`; ChatGPT reads `plugin.json` and `mcp.json`. The names do not clash, and `claude plugin validate --strict` accepts both side by side.
+
+### Build the ChatGPT ZIP
+
+No dependencies, Node 22 or later:
+
+```
+node scripts/build-chatgpt-zip.mjs
+```
+
+This validates the package and writes `dist/stronux-chatgpt.zip` (`dist/` is git-ignored) with only `plugin.json`, `mcp.json`, `assets/` and `skills/` minus `chatgpt-exclude.txt`. It fails if a JSON file does not parse, a limit is exceeded (display name and short description 30 characters, long description 4000, default prompts 3 of 128, exactly 5 positive and 3 negative test cases), a test case names a tool the MCP does not have, a forbidden key appears (`clientSecret`, `test_credentials`, `reviewer_instructions`, non-empty `headers`, `apps`, hooks) or `review.demo_recording_url` is still `TODO`. While the demo recording does not exist, `--allow-draft` builds anyway (CI uses it); never upload that ZIP. The owner uploads the ZIP in OpenAI's **Upload plugin** screen. Each change to the metadata or the skills is a new ZIP with a new `version` in `plugin.json`.
+
 ## What is inside
 
 | Path | What |
 |---|---|
 | `.claude-plugin/marketplace.json` | The `stronux` marketplace |
-| `plugins/stronux/.mcp.json` | Connection to the Stronux MCP server |
-| `plugins/stronux/skills/` | `setup-offers`, `course`, `guide`, `service`, `bundle`, `space-link`, `stats`, `members`, `community` |
+| `plugins/stronux/.mcp.json` | Connection to the Stronux MCP server (Claude) |
+| `plugins/stronux/plugin.json`, `mcp.json`, `assets/` | The ChatGPT listing, connection and logo |
+| `plugins/stronux/chatgpt-exclude.txt` | Skills left out of the ChatGPT ZIP |
+| `plugins/stronux/skills/` | `get-started`, `setup-offers`, `course`, `guide`, `service`, `bundle`, `space-link`, `stats`, `members`, `community` (shared) and `files-from-folder` (Claude only) |
+| `scripts/build-chatgpt-zip.mjs` | Validates and builds `dist/stronux-chatgpt.zip` |
 | `tests/` | Checks run in CI with `claude plugin validate --strict` |
 
 ## Legal
