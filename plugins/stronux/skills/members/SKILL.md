@@ -9,12 +9,12 @@ This sends real emails and uses plan seats, so it only happens after the person 
 
 **Academy:** call `whoami` first and pass `space_id` in every other tool. With more than one academy ask which one (by name or handle, never the id); the preview, the list and the yes belong to that academy. If a tool answers `space_choice_required`, `space_not_connected` or `space_mismatch`, explain what happened and call `whoami` again. The rules are in `setup-offers` section 1.
 
-`invite_members` and `invite_staff` may make the app ask the person to allow them before they run: say it once. That prompt does not replace the yes to the list.
+`invite_members` and `invite_staff` may make your AI app ask the person to confirm them before they run: say it once. That confirmation does not replace the yes to the list.
 
 ## Tools
 
 - `preview_member_invites`: shows what would happen for each person. Writes nothing and sends nothing.
-- `invite_members`: invites the approved list. Needs Publish on in Settings, Claude (if the answer says Publish is turned off, tell the person to invite from Stronux, Members, or to turn Publish on; do not try again).
+- `invite_members`: invites the approved list. Needs Publish on in Settings > AI assistants (if the answer says Publish is turned off, tell the person to invite from Stronux, Members, or to turn Publish on; do not try again).
 
 ## The flow, always in this order
 
@@ -27,7 +27,7 @@ This sends real emails and uses plan seats, so it only happens after the person 
    - `already_has_access`: they already have it. Nothing happens and they get no email.
    - `cannot_invite` with a `reason`: `invalid_email` (ask for the right one), `staff_user` (they already work in this academy as staff: they are not invited as a member; to invite someone to the team use `invite_staff`, see the Staff section), `duplicate` (the same email twice).
    - `missing_course_ids`: they have some of the courses; only the missing ones are added.
-   - `plan`: if there is a limit, say it ("500 seats, 132 used, 134 after this"). If `after` is above `limit`, the list does not fit: say so ("your plan allows 500 and this would make 503") and offer "I can invite the first N" (N = the seats left, counting only people who would get access, in the order of the list) or to upgrade the plan in Stronux. Never accept an overage with a cost; if they pick the first N, preview that shorter list and ask for the yes again.
+   - `plan`: if there is a limit, say it ("500 seats, 132 used, 134 after this"). If `after` is above `limit`, the list does not fit: say so ("your plan allows 500 and this would make 503") and offer "I can invite the first N" (N = the seats left, counting only people who would get access, in the order of the list), or say the plan is changed in Stronux. Never accept an overage with a cost; if they pick the first N, preview that shorter list and ask for the yes again.
    - Always say: "Access is free and does not expire." and "Emails cannot be taken back once they are sent."
 4. **Ask for the yes** to that list ("Should I invite the N people?"). Only after they say yes to it, call `invite_members` with the same people and courses and `person_confirmed: true`. If the list changes in any way, preview again and ask again.
 5. **Report what happened**, from the answer and not from the preview: `invited`, `already_has_access`, `failed` (with `error`) and `not_attempted`.
@@ -37,7 +37,7 @@ This sends real emails and uses plan seats, so it only happens after the person 
 - **20 people at a time.** For more, preview, confirm and invite 20 at a time, and say so ("I will do it in 2 rounds of 20").
 - **Someone who already has access gets nothing.** Say it in the table; never invite them again to "resend".
 - **One person failing does not stop the list.** Report each failure in its own words: `staff_user`, `email_linked_to_other_account`, `invalid_email`, `invite_failed`.
-- **A full plan** (`plan_limit_reached`, with `limit` and `upgrade_url`) stops the list there. The next people come back as `not_attempted`: say who was not invited and that the plan needs an upgrade in Stronux.
+- **A full plan** (`plan_limit_reached`, with `limit`) stops the list there. The next people come back as `not_attempted`: say who was not invited and that the plan is changed in Stronux. Never show `upgrade_url` or any billing or checkout link.
 - **Never remove access, set an end date, import a file or resend an invitation.** Those are done in Stronux, Members. If the person asks, say so.
 - **Only emails the person gave you.** Never add a name, an id or anything else about a person that you were not given.
 
@@ -59,7 +59,7 @@ Members are learners. Staff work in the academy as **Instructor** or **Admin**. 
 
 - **Never the owner.** If the person asks for it ("make her the owner"), do not call anything: ownership is transferred from Stronux and asks for the security code. The tool answers `role_not_allowed` if it is tried.
 - **Never remove or change a role.** There is no tool to take someone off the team, change their role, take courses away or transfer the ownership: those are done in Stronux, Members, Team. If the answer is `already_on_team`, say which role they have today and that changing it is done from Stronux.
-- **A full plan** (`plan_limit_reached`, with `limit` and `upgrade_url`): say that the plan has no more seats for that role and that it needs an upgrade in Stronux.
+- **A full plan** (`plan_limit_reached`, with `limit`): say that the plan has no more seats for that role and that the plan is changed in Stronux. Never show `upgrade_url` or any billing or checkout link.
 - **No permission** (`forbidden`): only people who manage the team can invite staff; the person can ask an owner or do it from Stronux.
 - **Publish off** (the answer says Publish is turned off): tell the person to invite from Stronux, Members, Team, or to turn Publish on; do not try again.
 - **Only what the person gave you.** Never invent an email, a role or a course.
