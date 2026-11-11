@@ -11,7 +11,11 @@
   "homepage": "https://stronux.com",
   "repository": "https://github.com/stronux-ai/stronux-plugins",
   "license": "MIT",
-  "keywords": ["stronux", "courses", "academy"],
+  "keywords": [
+    "stronux",
+    "courses",
+    "academy"
+  ],
   "extensions": {
     "com.openai": {
       "interface": {
@@ -44,31 +48,31 @@
             {
               "description": "Read: lists the offers of the test academy.",
               "prompt": "What offers do I have in my academy?",
-              "tools_triggered": ["whoami", "list_offers"],
+              "tools_triggered": "whoami, list_offers",
               "expected_behavior": "ChatGPT names the test academy and lists its five offers with type, published state and price: the courses Phone Photography Basics and Basic Photo Editing, the guide Light at Home Guide, the service 1:1 Portfolio Review and the bundle Photo Starter Bundle. Nothing changes in Stronux."
             },
             {
               "description": "Read: academy stats and the names behind one number.",
               "prompt": "How is my academy doing this month? Who hasn't started a course yet?",
-              "tools_triggered": ["whoami", "get_academy_stats", "list_member_changes"],
+              "tools_triggered": "whoami, get_academy_stats, list_member_changes",
               "expected_behavior": "ChatGPT shows the numbers Stronux calculates for the last 30 days (members with access, active, new, inactive and per-course progress) and then the names of the members who have not started, with their course. No emails and no payment data appear. Nothing changes in Stronux."
             },
             {
               "description": "Read: the structure of one course.",
               "prompt": "Show me the structure of the course \"Phone Photography Basics\".",
-              "tools_triggered": ["whoami", "list_offers", "get_course_structure"],
+              "tools_triggered": "whoami, list_offers, get_course_structure",
               "expected_behavior": "ChatGPT finds the course by name and shows its three sections with their lessons in order, and which lessons have a video. Nothing changes in Stronux."
             },
             {
               "description": "Write: creates a draft course with sections and text lessons.",
               "prompt": "Create a draft course called \"Home Coffee Basics\" with three sections: Beans, Brewing and Tasting, and a short text lesson in each one.",
-              "tools_triggered": ["whoami", "create_course", "add_section", "add_lesson"],
+              "tools_triggered": "whoami, create_course, add_section, add_lesson",
               "expected_behavior": "ChatGPT shows a short plan and asks for a yes, and ChatGPT's own confirmation appears before the write calls. It then creates the course as a draft (not published, nobody can buy it) with the sections Beans, Brewing and Tasting and one text lesson in each, and summarizes what it created. Nothing is published."
             },
             {
               "description": "Write: creates a draft bundle from the two existing courses.",
               "prompt": "Put my two courses in a bundle called \"Starter Pack\".",
-              "tools_triggered": ["whoami", "list_offers", "create_bundle"],
+              "tools_triggered": "whoami, list_offers, create_bundle",
               "expected_behavior": "ChatGPT finds the two courses, asks to confirm, and creates the bundle Starter Pack as a draft with both courses. It does not set a price unless asked and does not publish it. The existing Photo Starter Bundle is not changed."
             }
           ],

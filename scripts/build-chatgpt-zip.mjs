@@ -77,8 +77,8 @@ export function validate(dir = pluginDir, { allowDraft = false } = {}) {
   for (const c of [...(tc?.positive || []), ...(tc?.negative || [])]) if (!c.description || !c.prompt) err('every test case needs description and prompt');
   for (const c of tc?.positive || []) {
     if (!c.expected_behavior) err(`positive case without expected_behavior: ${c.prompt}`);
-    if (!c.tools_triggered?.length) err(`positive case without tools_triggered: ${c.prompt}`);
-    for (const t of c.tools_triggered || []) if (!TOOLS.has(t)) err(`test case names an unknown tool: ${t}`);
+    if (typeof c.tools_triggered !== 'string' || !c.tools_triggered.trim()) err(`positive case without tools_triggered (must be a string): ${c.prompt}`);
+    for (const t of toolList(c.tools_triggered)) if (!TOOLS.has(t)) err(`test case names an unknown tool: ${t}`);
   }
   if (oa?.review?.demo_recording_url === 'TODO' && !allowDraft) err('review.demo_recording_url is still "TODO"');
   if (oa && !oa.onboardingSkill) err('onboardingSkill missing');
@@ -183,4 +183,8 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   }
   console.log(`Built ${res.out} (${res.size} bytes)\n` + res.files.map((f) => `  ${f}`).join('\n'));
   if (args.includes('--allow-draft')) console.log('\nDRAFT build (--allow-draft): do not upload this ZIP.');
+}
+
+function toolList(s) {
+  return String(s).split(',').map((x) => x.trim()).filter(Boolean);
 }

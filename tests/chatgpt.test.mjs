@@ -33,7 +33,7 @@ test('plugin.json for ChatGPT keeps the field limits and the 5 + 3 test cases', 
   assert.ok(ui.defaultPrompt.length <= 3 && ui.defaultPrompt.every((p) => p.length <= 128));
   assert.equal(oa.review.test_cases.positive.length, 5);
   assert.equal(oa.review.test_cases.negative.length, 3);
-  for (const c of oa.review.test_cases.positive) for (const tool of c.tools_triggered) assert.ok(TOOLS.has(tool), tool);
+  for (const c of oa.review.test_cases.positive) for (const tool of c.tools_triggered.split(",").map((x) => x.trim())) assert.ok(TOOLS.has(tool), tool);
 });
 
 test('validate rejects forbidden keys, bad limits, wrong case counts and unknown tools', () => {
@@ -55,7 +55,7 @@ test('validate rejects forbidden keys, bad limits, wrong case counts and unknown
     assert.match(mutate((o) => { o.interface.defaultPrompt = ['a', 'b', 'c', 'd']; }), /defaultPrompt/);
     assert.match(mutate((o) => { o.review.test_cases.positive.pop(); }), /exactly 5/);
     assert.match(mutate((o) => { o.review.test_cases.negative.pop(); }), /exactly 3/);
-    assert.match(mutate((o) => { o.review.test_cases.positive[0].tools_triggered = ['delete_course']; }), /unknown tool/);
+    assert.match(mutate((o) => { o.review.test_cases.positive[0].tools_triggered = 'delete_course'; }), /unknown tool/);
     assert.match(mutate((o) => { o.review.test_credentials = {}; }), /test_credentials/);
     assert.match(mutate((o) => { o.review.reviewer_instructions = 'x'; }), /reviewer_instructions/);
     assert.match(mutate((o, p) => { p.apps = []; }), /apps/);
