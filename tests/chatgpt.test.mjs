@@ -47,7 +47,14 @@ test('validate rejects forbidden keys, bad limits, wrong case counts and unknown
       return validate(tmp, { allowDraft: true }).join(' | ');
     };
     assert.deepEqual(validate(tmp, { allowDraft: true }), []);
-    assert.match(validate(tmp).join(' | '), /demo_recording_url/, 'a TODO demo URL blocks a real build');
+    assert.deepEqual(validate(tmp), [], 'the real package builds without --allow-draft');
+    {
+      const p = readJson(join(plugin, 'plugin.json'));
+      p.extensions['com.openai'].review.demo_recording_url = 'TODO';
+      writeFileSync(join(tmp, 'plugin.json'), JSON.stringify(p));
+      assert.match(validate(tmp).join(' | '), /demo_recording_url/, 'a TODO demo URL blocks a real build');
+      assert.deepEqual(validate(tmp, { allowDraft: true }), []);
+    }
     assert.match(mutate((o) => { o.interface.shortDescription = 'x'.repeat(31); }), /shortDescription/);
     assert.match(mutate((o) => { o.interface.displayName = 'x'.repeat(31); }), /displayName/);
     assert.match(mutate((o) => { o.interface.longDescription = 'x'.repeat(4001); }), /longDescription/);
