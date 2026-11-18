@@ -9,10 +9,10 @@ The plugin has two parts: the **connection** to Stronux and the **skills** that 
 1. Add the marketplace:
 
    ```
-   /plugin marketplace add stronux-ai/stronux-claude
+   /plugin marketplace add stronux-ai/stronux-plugins
    ```
 
-   (or `claude plugin marketplace add stronux-ai/stronux-claude` in a terminal)
+   (or `claude plugin marketplace add stronux-ai/stronux-plugins` in a terminal)
 
    Two ways, same result. **In a terminal** (installs directly): `claude plugin marketplace add ...` and `claude plugin install stronux@stronux`. **Inside a Claude Code session**: `/plugin marketplace add ...` and `/plugin install stronux@stronux` open a panel where you confirm the install.
 
@@ -37,7 +37,7 @@ If you already added a server with the same URL by hand, Claude Code may hide th
 
 ## Claude Desktop
 
-1. **Skills:** Customize → Plugins → Add → upload the `plugins/stronux` folder as a `.zip`, or add the GitHub marketplace `stronux-ai/stronux-claude`.
+1. **Skills:** Customize → Plugins → Add → upload the `plugins/stronux` folder as a `.zip`, or add the GitHub marketplace `stronux-ai/stronux-plugins`.
 2. **Connection:** Customize → Connectors → Add custom connector. URL `https://stronux.com/api/mcp`; under "Use your own OAuth client" (Advanced settings) enter the OAuth Client ID `stronux-claude-prod` and leave the secret empty. Add, Connect, and sign in to Stronux. Connector authentication settings cannot be edited: to change them, remove the connector and add it again.
 3. Give Claude access to the folder with your material and make the same first request.
 

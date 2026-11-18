@@ -8,7 +8,7 @@
     "url": "https://stronux.com"
   },
   "homepage": "https://stronux.com/claude",
-  "repository": "https://github.com/stronux-ai/stronux-claude",
+  "repository": "https://github.com/stronux-ai/stronux-plugins",
   "license": "MIT",
   "icon": "./icon.png",
   "documentationUrl": "https://stronux.com/claude",

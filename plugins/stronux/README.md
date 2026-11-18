@@ -18,7 +18,7 @@ A Stronux account that owns an academy. Only the owner can connect it. If you ow
 In Claude Code:
 
 ```
-/plugin marketplace add stronux-ai/stronux-claude
+/plugin marketplace add stronux-ai/stronux-plugins
 /plugin install stronux@stronux
 ```
 

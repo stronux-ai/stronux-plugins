@@ -5,11 +5,11 @@ description: Use when the person asks to group two or more existing courses into
 
 # Bundle
 
-Follow the `setup-offers` skill first (folder reading, plan, rules, including `whoami` and `space_id` on every call). Then:
+Follow the `setup-offers` skill first (plan, rules, including `whoami` and `space_id` on every call). Then:
 
 1. `list_offers` to find the courses by name. A bundle needs two or more. If one is missing, build it first with the `course` skill or ask the person.
 2. `create_bundle` with name, description and `course_ids`. If the name is used (`name_taken`) ask for another.
-3. Cover with `set_offer_cover` (see images in `setup-offers`), then frame it with `set_cover_framing` (target offer) and say so in the summary. Texts with `update_offer`.
+3. Texts with `update_offer`. Cover: To upload files from a folder on the computer, follow `files-from-folder` if you have it; otherwise the person uploads them in Stronux.
 4. `set_price`.
 5. Summary, in draft.
 
